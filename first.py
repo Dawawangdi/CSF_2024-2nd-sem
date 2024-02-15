@@ -1,1 +1,2 @@
-print("hello world")
+print ("hello world")
+print("I am as cool as ICE")
