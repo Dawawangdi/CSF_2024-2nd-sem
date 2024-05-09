@@ -1,34 +1,6 @@
 import pygame
 import random
 
-pygame.init()
-
-
-BLACK =(0,0,0) #RGB for black
-WHITE = (255,255,255) #RGB for white
-
-WIDTH, HEIGHT = 800,600    #window size
-BALL_RADIUS = 10 
-PADDLE_WIDTH = 100
-PADDLE_HEIGHT = 20
-
-class Ball:    #defines a new class named Ball
-    def __init__(self):
-        self.x = WIDTH //2  #It sets the initial horizontal position of the ball to be at the center of the game window. WIDTH represents the width of the game window, so WIDTH // 2 calculates the midpoint
-        self.y = HEIGHT //2
-        self.speed_x = random.choice([-3,3])  #The random.choice() function is used to randomly select between -3 and 3.This means the ball will start moving either to the left or to the right at a speed of 3 units per frame
-        self.speed_y = 2  #This value indicates that each time the game updates, the ball will move downward by 2 pixels Unlike speed_x, speed_y does not randomly change, ensuring consistent downward movement at game start
-    def move(self):
-        self.x= self.speed_x  # If self.speed_x is positive, the movement is to the right; if it's negative, the movement is to the left.
-        self.y= self.speed_y  #if self.speed_y is positive, the object moves down; if negative, the object moves up.
-    def check_collision(self):
-        if self.x <= BALL_RADIUS or self.x >= WIDTH - BALL_RADIUS:
-            self.speed_x = -self.speed_x  #reverses the horizontal velocity of the ball
-        if self.y<=BALL_RADIUS:
-            self.speed_y = -self.speed_y #. If self.speed_y was positive (meaning the ball was moving downward), it becomes negative (causing the ball to move upward), and vice versa. This effectively simulates a bounce off the top wall.
-import pygame
-import random
-
 # Define colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -44,7 +16,7 @@ class Ball:
         self.x = WIDTH // 2
         self.y = HEIGHT // 2
         self.speed_x = random.choice([-3, 3])
-        self.speed_y = 2
+        self.speed_y = 3
 
     def move(self):
         self.x += self.speed_x
@@ -76,34 +48,46 @@ class Game:
         self.score = 0
         self.font = pygame.font.Font(None, 36)
         self.game_over = False
+        self.display_final_score = False
 
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.game_over = True
+                self.display_final_score = True
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_END:
+                    self.game_over = True
+                    self.display_final_score = True
 
     def update(self):
-        self.ball.move()
-        self.ball.check_collision()
-        if self.ball.y >= HEIGHT - BALL_RADIUS - PADDLE_HEIGHT:
-            if self.paddle.x <= self.ball.x <= self.paddle.x + PADDLE_WIDTH:
-                self.ball.y = HEIGHT - BALL_RADIUS - PADDLE_HEIGHT - 1
-                self.ball.speed_y = -self.ball.speed_y
-                self.score += 1
-            else:
-                self.game_over = True
+        if not self.game_over:
+            self.ball.move()
+            self.ball.check_collision()
+            if self.ball.y >= HEIGHT - BALL_RADIUS - PADDLE_HEIGHT:
+                if self.paddle.x <= self.ball.x <= self.paddle.x + PADDLE_WIDTH:
+                    self.ball.y = HEIGHT - BALL_RADIUS - PADDLE_HEIGHT - 1
+                    self.ball.speed_y = -self.ball.speed_y
+                    self.score += 1
+                    # Increase speed after collision with the paddle
+                    self.ball.speed_x *= 1.1  # Increase horizontal speed by 10%
+                    self.ball.speed_y *= 1.1  # Increase vertical speed by 10%
+                else:
+                    self.game_over = True
+                    self.display_final_score = True
 
     def draw(self, screen):
         screen.fill(BLACK)
-        pygame.draw.circle(screen, WHITE, (self.ball.x, self.ball.y), BALL_RADIUS)
-        pygame.draw.rect(screen, WHITE, (self.paddle.x, self.paddle.y, self.paddle.width, self.paddle.height))
-        score_text = self.font.render(f"Score: {self.score}", True, WHITE)
-        screen.blit(score_text, (10, 10))
-        if self.game_over:
-            game_over_text = self.font.render(f"Game Over! Your score: {self.score}", True, WHITE)
-            game_over_rect = game_over_text.get_rect()
-            game_over_rect.center = (WIDTH // 2, HEIGHT // 2)
+        if not self.display_final_score:
+            pygame.draw.circle(screen, WHITE, (self.ball.x, self.ball.y), BALL_RADIUS)
+            pygame.draw.rect(screen, WHITE, (self.paddle.x, self.paddle.y, self.paddle.width, self.paddle.height))
+            score_text = self.font.render(f"Score: {self.score}", True, WHITE)
+            screen.blit(score_text, (10, 10))
+        if self.display_final_score:
+            game_over_text = self.font.render(f"Game Over! Final Score: {self.score}", True, WHITE)
+            game_over_rect = game_over_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
             screen.blit(game_over_text, game_over_rect)
+
 
 def main():
     pygame.init()
@@ -111,27 +95,43 @@ def main():
     pygame.display.set_caption("Ping Pong")
     clock = pygame.time.Clock()
     game = Game()
+    font = pygame.font.Font(None, 74)  # Larger font for countdown
 
-    while not game.game_over:
-        game.handle_events()
+    # Countdown before the game starts
+    countdown = 3
+    while countdown > 0:
+        screen.fill(BLACK)
+        countdown_text = font.render(str(countdown), True, WHITE)
+        countdown_rect = countdown_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+        screen.blit(countdown_text, countdown_rect)
+        pygame.display.flip()
+        pygame.time.delay(1000)  # Wait for 1 second
+        countdown -= 1
+
+    # Main game loop
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             game.paddle.move("left")
         if keys[pygame.K_RIGHT]:
             game.paddle.move("right")
+
+        game.handle_events()
         game.update()
         game.draw(screen)
         pygame.display.flip()
         clock.tick(60)
 
+        if game.game_over:
+            # Delay after game over to show the final score
+            pygame.time.delay(5000)  # Display for 5000 milliseconds (5 seconds)
+            running = False
+
     pygame.quit()
 
 main()
-
-
-
-
-
-
-
-
