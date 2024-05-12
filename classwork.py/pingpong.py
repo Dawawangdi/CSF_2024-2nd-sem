@@ -129,7 +129,7 @@ def main():
 
         if game.game_over:
             # Delay after game over to show the final score
-            pygame.time.delay(5000)  # Display for 5000 milliseconds (5 seconds)
+            pygame.time.delay(5000)  # Display for 2000 milliseconds (2 seconds)
             running = False
 
     pygame.quit()
