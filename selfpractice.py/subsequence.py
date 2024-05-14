@@ -21,8 +21,8 @@ class Solution(object):
         return(s,t)
     
 sol = Solution()
-s = ('amc')
-t= ('liahybbfjtutic')
+s = ("axc")
+t= ("ahbgdc")
 print(sol.isSubsequence(s,t))
 
 
