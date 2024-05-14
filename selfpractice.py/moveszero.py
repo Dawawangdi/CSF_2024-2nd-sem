@@ -10,7 +10,7 @@ class Solution(object):
         #l = 0: Initializes a variable l to 0. This will be used as the left pointer 
         for r in range(len(nums)):
             #r right pointer, iterates over len of num list.
-            if nums[r]:
+            if nums[r] is not 0:
                 #if nums[r]:: Checks if the current element at index r is non-zero
                 nums[l], nums[r] = nums[r], nums[l]
                 l+=1
