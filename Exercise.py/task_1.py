@@ -7,7 +7,7 @@ if (Age <= 12 or Age <= 18) and std == 'yes':
 elif Age > 18 or std == 'no':
     print("not elegible for discount")
 else:
-    (print( "invaild out put"))
+    (print( "invaild output"))
     
 
 
