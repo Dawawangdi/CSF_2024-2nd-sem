@@ -1,22 +1,39 @@
-#import the random number
-import random 
-# grnerate a random nuber btw 1 to 10
-secrect_num = random. randint(1,10)
-max.attempts = 3,
-def user_guess ():
-    print("\n Welcom to guessing game.")
-    print("you have {max_attempts} to uess the number between 1 to 10.")
-def guess_recurssive(attempts_left):
-    guess = int(input("\nGuess the number between 1 to 10:\n"))
-    if guess == secrect_num:
-        print("Congratulation you have guessed correctly.")
-    else:
-        print(f"wrong guess.Attempts left: {attempts_left-1}")
-        if attempts_left >1:
-            guess_recurssive(attempts_left -1)
-        else:
-            print(f"\nSorry, you couldn't guess the number right. The correct number was {secrect_num}")
+# Importing standard package for later use
+import random
+
+# Function to welcome the user
+def welcome():
+    print("Welcome to the Number Guessing Game!")
+
+# Recursive function to play the guessing game
+def guess_number(secret_num, attempts=3):
+    print("You have", attempts, "attempts left.")
+    guess = int(input("Guess the number (between 1 and 10): "))
     
-user_guess()
-guess_recurssive(max_attempts)
-print(f"Memory address of secrect Number {secrect_num} is : {id(secrect_num)}")
+    if guess == secret_num:
+        print("Congratulations! You guessed the correct number!")
+    elif attempts == 1:
+        print("Sorry, you've used all your attempts. The correct number was:", secret_num)
+    else:
+        if guess < secret_num:
+            print("Try a higher number.")
+        else:
+            print("Try a lower number.")
+        guess_number(secret_num, attempts - 1)
+
+# Calling a function for the execution
+def main():
+    # Generating a random number between 1 and 10
+    secret_number = random.randint(1, 10)
+    
+    # Print memory address of the secret number
+    print("Memory address of the secret number:", id(secret_number))
+    
+    # Welcome the user
+    welcome()
+    
+    # Play the guessing game with 3 attempts
+    guess_number(secret_number, 3)
+
+if __name__ == "__main__":
+    main()
