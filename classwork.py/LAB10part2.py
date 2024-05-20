@@ -1,10 +1,10 @@
-###Merge Two Sorted Lists:
+##Merge Two Sorted Lists:
 
 class Solution:
     # Function to merge two sorted lists
     def mergeTwoLists(self, list1, list2):
         # Initialize a dummy node
-        dummy = ListNode(-1)
+        dummy = self.ListNode(-1)
         current = dummy
         
         # Merge lists while both have nodes
