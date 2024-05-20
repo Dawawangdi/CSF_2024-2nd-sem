@@ -1,7 +1,7 @@
 
 ##MULTIPLICATION TABLE WITH LOOPS
 
-# Prompt user for the number and limit
+
 number = int(input("Enter the number for the multiplication table: "))
 limit = int(input("Enter the limit up to which you want the table generated: "))
 
