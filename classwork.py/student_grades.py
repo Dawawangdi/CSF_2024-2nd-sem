@@ -1,5 +1,5 @@
 
-# Guide for managing student grades
+#managing student grades
 
 num_students = int(input("Enter the number of students: "))  # Prompt user for number of students
 i = 1  # Initialize student counter
@@ -16,6 +16,14 @@ while i <= num_students:  # Loop over each student
     print(f"Average grade for student {i}: {average_grade:.2f}")  # Print average grade with 2 decimal places
     
     i += 1  # Increment student counter
+
+
+
+
+
+
+
+
 
 
 
